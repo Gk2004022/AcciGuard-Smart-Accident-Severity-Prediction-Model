@@ -17,7 +17,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://acciguard-smart-accident-severity-prediction-model.vercel.app/",  # Replace with your actual Vercel URL
+        "https://v0-acciguard-smart-accident-severity-prediction-model-kc.vercel.app/",  # Replace with your actual Vercel URL
         "http://localhost:3000",         # For local development
     ],
     allow_credentials=True,
