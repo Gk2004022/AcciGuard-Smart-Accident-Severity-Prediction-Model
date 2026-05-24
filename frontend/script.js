@@ -1,10 +1,32 @@
-const DEPLOYED_BACKEND_URL = backend_url_ ;
+// ==========================================
+// BACKEND CONFIGURATION POINT
+// ==========================================
+// Configure the backend API URL using one of these options:
+// 1. Direct: Edit the string below (e.g. "https://acciguard-backend.onrender.com")
+// 2. Global: Set window.BACKEND_URL before script.js loads (ideal for single-page configs)
+// 3. Browser: Set localStorage.setItem('BACKEND_URL', 'https://your-backend.com') in the browser console.
+const CONFIG = {
+    BACKEND_URL: window.BACKEND_URL || localStorage.getItem('BACKEND_URL') || "https://acciguard-smart-accident-severity.onrender.com"
+};
+
+// Determine the API base URL dynamically based on environment
+const getApiBaseUrl = () => {
+    // If a custom URL is configured, use it (removing trailing slashes)
+    if (CONFIG.BACKEND_URL && CONFIG.BACKEND_URL.trim() !== "") {
+        return CONFIG.BACKEND_URL.trim().replace(/\/$/, "");
+    }
+    // Fall back to relative path if running locally or if hosted on the same server
+    const localHosts = ['127.0.0.1', 'localhost', '::1'];
+    const isLocal = localHosts.includes(window.location.hostname) || window.location.hostname.startsWith('192.168.');
+    if (isLocal) {
+        return ""; // e.g. relative path on local development
+    }
+    return ""; // Default relative path when served by FastAPI
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Determine the API base URL dynamically based on environment
-    const API_BASE_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
-        ? '' // When running locally, use relative path (e.g., /predict)
-        : DEPLOYED_BACKEND_URL; // When deployed on Vercel, use the Render URL
 
     // Sync input coordinates back to map marker on blur
     const latInput = document.getElementById('latitude');

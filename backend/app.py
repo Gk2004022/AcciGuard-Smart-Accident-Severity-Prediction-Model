@@ -7,29 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-app = FastAPI()
-
-# Add CORS middleware - UPDATE with your actual Vercel URL
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "https://v0-acciguard-smart-accident-severity-prediction-model-kc.vercel.app/",  # Replace with your actual Vercel URL
-        "http://localhost:3000",         # For local development
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Your existing /predict endpoint should accept POST requests
-@app.post("/predict")
-async def predict(data: dict):
-    # Your prediction logic here
-    pass
 # Define unscaled numeric medians and categorical defaults
 DEFAULT_NUMERICS = {
     'police_force': 30.0,
@@ -84,11 +61,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for cross-domain requests
+# Enable CORS for cross-domain requests (allow all origins for seamless external deployment)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,  # Set to False to prevent modern browsers from blocking wildcard origins
     allow_methods=["*"],
     allow_headers=["*"],
 )
