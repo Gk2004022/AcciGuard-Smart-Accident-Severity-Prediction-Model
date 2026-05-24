@@ -16,7 +16,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from lightgbm import LGBMClassifier
 from xgboost import XGBClassifier
-from imblearn.over_sampling import SMOTE
 
 sns.set_theme(style="whitegrid", context="talk")
 plt.rcParams.update({'savefig.dpi': 300, 'savefig.bbox': 'tight'})
@@ -98,13 +97,6 @@ def get_train_test_splits(X, y, test_size=0.2, sample_fraction=1.0, random_state
     )
     
     return X_train, X_test, y_train, y_test
-
-def apply_smote(X_train, y_train, random_state=42):
-    print("Applying SMOTE to balance target classes...")
-    smote = SMOTE(random_state=random_state)
-    X_res, y_res = smote.fit_resample(X_train, y_train)
-    print(f"SMOTE Completed! Training rows expanded from {X_train.shape[0]:,} to {X_res.shape[0]:,}.")
-    return X_res, y_res
 
 def train_and_evaluate_model(model_name, model, X_train, y_train, X_test, y_test, use_sample_weight=False):
     print(f"\nTraining {model_name}...")
