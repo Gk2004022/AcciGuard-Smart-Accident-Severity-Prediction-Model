@@ -1,9 +1,3 @@
-/*
- * Style: style.css
- * Author: Antigravity (Google DeepMind)
- * Description: Premium styling system for the Accident Severity Predictor Dashboard.
- */
-
 :root {
     /* Color Tokens */
     --bg-app: #070a13;
@@ -680,9 +674,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* ==========================================================================
-   ANTIGRAVITY THEME ENGINE - LIGHT THEME & SWITCHER ANIMATIONS
-   ========================================================================== */
 
 /* Light Theme Variables */
 html[data-theme="light"] {

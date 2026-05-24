@@ -1,10 +1,12 @@
-/*
- * Script: script.js
- * Author: Antigravity (Google DeepMind)
- * Description: Client-side logic for the Road Accident Severity Predictor Dashboard.
- */
+// CHANGE THIS to your actual deployed Render backend URL (e.g., https://my-accident-predictor.onrender.com)
+const DEPLOYED_BACKEND_URL = 'https://acciguard-smart-accident-severity.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Determine the API base URL dynamically based on environment
+    const API_BASE_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+        ? '' // When running locally, use relative path (e.g., /predict)
+        : DEPLOYED_BACKEND_URL; // When deployed on Vercel, use the Render URL
+
     // Sync input coordinates back to map marker on blur
     const latInput = document.getElementById('latitude');
     const lngInput = document.getElementById('longitude');
@@ -30,10 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const isLight = theme === 'light';
         // CartoDB Dark Matter for dark theme, CartoDB Voyager for light theme
-        const tileUrl = isLight 
+        const tileUrl = isLight
             ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
             : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-            
+
         activeTileLayer = L.tileLayer(tileUrl, {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
@@ -104,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('/predict', {
+            const response = await fetch(`${API_BASE_URL}/predict`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -280,10 +282,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 15);
     }
 
-    // 5. Antigravity Theme Engine Toggle Logic
     const themeToggleBtn = document.getElementById('theme-engine-toggle');
     const themeStatusBadge = document.getElementById('theme-engine-status');
-    
+
     // Sync initial UI badge label on load
     if (themeStatusBadge) {
         themeStatusBadge.textContent = initialTheme === 'dark' ? 'Dark' : 'Light';
@@ -293,16 +294,16 @@ document.addEventListener('DOMContentLoaded', () => {
         themeToggleBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             // Apply theme attributes to document element
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             // Smoothly update state badge label
             if (themeStatusBadge) {
                 themeStatusBadge.textContent = newTheme === 'dark' ? 'Dark' : 'Light';
             }
-            
+
             // Swap Leaflet map tile layers dynamically
             updateMapTiles(newTheme);
         });
