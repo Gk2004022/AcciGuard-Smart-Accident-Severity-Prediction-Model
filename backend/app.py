@@ -82,9 +82,9 @@ def load_assets():
     global scaler, model_features, model
     try:
         print("Loading serialized machine learning assets...")
-        scaler = joblib.load('models/scaler.joblib')
-        model_features = joblib.load('models/model_features.joblib')
-        model = joblib.load('models/lightgbm_model.joblib')
+        scaler = joblib.load('backend/scaler.joblib')
+        model_features = joblib.load('backend/model_features.joblib')
+        model = joblib.load('backend/lightgbm_model.joblib')
         print("Assets successfully loaded! Service ready.")
     except Exception as e:
         print(f"CRITICAL: Failed to load machine learning assets from 'models/'. Error: {e}")
