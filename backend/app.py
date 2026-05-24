@@ -1,13 +1,3 @@
-"""
-Module: app.py
-Author: Antigravity (Google DeepMind)
-Description:
-    FastAPI high-performance backend serving as the API layer for AcciGuard: Smart Vehicle Accident Severity Prediction using Machine Learning.
-    - Exposes a REST API '/predict' endpoint that takes simplified accident characteristics.
-    - Features a robust preprocessing pipeline including StandardScaler scaling and One-Hot Encoding alignment.
-    - Serves the premium dashboard user interface directly.
-"""
-
 import os
 import joblib
 import pandas as pd
