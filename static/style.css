@@ -1,0 +1,961 @@
+/*
+ * Style: style.css
+ * Author: Antigravity (Google DeepMind)
+ * Description: Premium styling system for the Accident Severity Predictor Dashboard.
+ */
+
+:root {
+    /* Color Tokens */
+    --bg-app: #070a13;
+    --bg-card: rgba(13, 20, 38, 0.65);
+    --bg-header: #0b0f1d;
+    --primary: #5f5af6;
+    --primary-hover: #4a45d4;
+    --primary-glow: rgba(95, 90, 246, 0.3);
+    --accent: #f43f5e;
+    
+    /* Severity Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    
+    /* Text Colors */
+    --text-main: #f8fafc;
+    --text-sub: #cbd5e1;
+    --text-muted: #64748b;
+    
+    /* Borders & Outlines */
+    --border: rgba(255, 255, 255, 0.07);
+    --border-hover: rgba(255, 255, 255, 0.15);
+    --border-active: rgba(95, 90, 246, 0.5);
+    
+    /* Box Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* CSS RESET & BASICS */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image: radial-gradient(circle at 10% 20%, rgba(95, 90, 246, 0.06) 0%, transparent 40%),
+                      radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.04) 0%, transparent 40%);
+    background-attachment: fixed;
+}
+
+.app-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 100vh;
+}
+
+/* APP HEADER */
+.app-header {
+    background-color: var(--bg-header);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.icon-primary {
+    color: var(--primary);
+    width: 36px;
+    height: 36px;
+    stroke-width: 2.2;
+}
+
+.logo-text h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-text p {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.header-badges {
+    display: flex;
+    gap: 12px;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+}
+
+.badge-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.badge-accent {
+    background-color: rgba(95, 90, 246, 0.15);
+    color: #a5b4fc;
+    border-color: rgba(95, 90, 246, 0.25);
+}
+
+.badge-success {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #6ee7b7;
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+/* MAIN GRID LAYOUT */
+.main-layout {
+    display: grid;
+    grid-template-columns: 460px 1fr;
+    gap: 24px;
+    align-items: start;
+    flex-grow: 1;
+}
+
+@media (max-width: 1100px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+    .control-panel {
+        max-height: none !important;
+    }
+}
+
+/* GLASS CARD CLASS */
+.glass-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-lg);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    border-color: var(--border-hover);
+}
+
+/* LEFT PANEL (CONTROL PANEL) */
+.control-panel {
+    padding: 24px;
+    max-height: 860px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Custom Scrollbar for Form Panel */
+.control-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.control-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+.control-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+}
+.control-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.panel-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-main);
+}
+
+.title-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--primary);
+}
+
+.panel-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: -12px;
+    line-height: 1.4;
+}
+
+/* FORM ELEMENTS GROUPING */
+.form-group-container {
+    background-color: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.group-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-sub);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.3px;
+}
+
+.group-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--primary);
+}
+
+.group-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: -8px;
+    line-height: 1.3;
+}
+
+.grid-2-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* FORM INPUT FIELDS styles */
+input[type="number"],
+input[type="datetime-local"],
+select {
+    background-color: rgba(8, 12, 23, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-main);
+    font-weight: 500;
+    outline: none;
+    transition: all 0.25s ease;
+    width: 100%;
+}
+
+input[type="number"]:focus,
+input[type="datetime-local"]:focus,
+select:focus {
+    border-color: var(--border-active);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    background-color: rgba(8, 12, 23, 0.9);
+}
+
+/* Dropdown Arrow Styling for Premium feel */
+select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 14px;
+    padding-right: 36px;
+}
+
+/* DATETIME LOCAL CALENDAR ICON STYLING */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.85);
+    cursor: pointer;
+}
+
+/* SUBMIT BUTTON */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 16px var(--primary-glow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(95, 90, 246, 0.45);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.2;
+}
+
+/* RIGHT PANEL (DISPLAY PANEL) */
+.display-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* INTERACTIVE MAP MAP CARD */
+.map-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.map-header {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.map-header h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+}
+
+.map-info {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#map {
+    height: 380px;
+    width: 100%;
+    z-index: 1;
+}
+
+/* CUSTOM DARK MAP STYLING OVERRIDES (Leaflet) */
+.leaflet-container {
+    background-color: var(--bg-app) !important;
+}
+.leaflet-bar a {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border) !important;
+    backdrop-filter: blur(8px);
+}
+.leaflet-bar a:hover {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+/* RESULTS CARD CARD */
+.results-card {
+    padding: 24px;
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* PLACEHOLDER STATE */
+.placeholder-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    gap: 16px;
+}
+
+.placeholder-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.placeholder-state h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-sub);
+}
+
+.placeholder-state p {
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 480px;
+    line-height: 1.5;
+}
+
+/* RESULT STATE */
+.result-state {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+}
+
+.result-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#res-severity-class {
+    font-family: 'Outfit', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-top: 4px;
+}
+
+.result-status-badge {
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 0 16px currentColor;
+    background-color: transparent;
+}
+
+/* GAUGES CONTAINER */
+.gauges-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.gauge-card {
+    background-color: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.gauge-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* CIRCULAR CHART CHART */
+.circular-chart {
+    display: block;
+    margin: 0 auto;
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.03);
+    stroke-width: 2.8;
+}
+
+.circle {
+    fill: none;
+    stroke-width: 2.8;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.percentage {
+    fill: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    font-size: 8px;
+    font-weight: 800;
+    text-anchor: middle;
+}
+
+/* CIRCLE COLORS COLORS */
+.circle-gauge[data-color="success"] .circle {
+    stroke: var(--success);
+}
+.circle-gauge[data-color="warning"] .circle {
+    stroke: var(--warning);
+}
+.circle-gauge[data-color="danger"] .circle {
+    stroke: var(--danger);
+}
+
+/* RISK MULTIPLIERS */
+.risk-factors-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.risk-multiplier-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: transform 0.3s ease;
+}
+
+.risk-multiplier-card:hover {
+    transform: translateY(-2px);
+}
+
+.risk-icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.2;
+}
+
+.risk-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.risk-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.risk-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.text-danger { color: var(--accent); }
+.text-warning { color: var(--warning); }
+
+/* UNDER THE HOOD EXTRACTION */
+.meta-section {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meta-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.meta-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--primary);
+}
+
+.meta-grid {
+    font-size: 12px;
+    color: var(--text-muted);
+    row-gap: 8px !important;
+}
+
+.meta-grid span {
+    color: var(--text-sub);
+    font-weight: 600;
+}
+
+/* ANIMATIONS & STATES */
+.hidden {
+    display: none !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ==========================================================================
+   ANTIGRAVITY THEME ENGINE - LIGHT THEME & SWITCHER ANIMATIONS
+   ========================================================================== */
+
+/* Light Theme Variables */
+html[data-theme="light"] {
+    --bg-app: #f0f4f9; /* Ethereal soft light background */
+    --bg-card: rgba(255, 255, 255, 0.65); /* Ethereal white glass */
+    --bg-header: rgba(255, 255, 255, 0.85);
+    
+    --primary: #4f46e5;
+    --primary-hover: #3730a3;
+    --primary-glow: rgba(79, 70, 229, 0.15);
+    --accent: #e11d48;
+    
+    /* Severity Colors */
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    
+    /* Text Colors */
+    --text-main: #0f172a; /* Slate 900 */
+    --text-sub: #334155;  /* Slate 700 */
+    --text-muted: #64748b; /* Slate 500 */
+    
+    /* Borders & Outlines */
+    --border: rgba(79, 70, 229, 0.08); /* Soft primary tint border */
+    --border-hover: rgba(79, 70, 229, 0.18);
+    --border-active: rgba(79, 70, 229, 0.4);
+    
+    /* Box Shadows (Ethereal anti-gravity white-blue shadows) */
+    --shadow-sm: 0 2px 8px rgba(79, 70, 229, 0.04);
+    --shadow-md: 0 8px 32px rgba(79, 70, 229, 0.06);
+    --shadow-lg: 0 16px 48px rgba(79, 70, 229, 0.1);
+}
+
+/* Ethereal body background image for Light Mode */
+html[data-theme="light"] body {
+    background-image: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.07) 0%, transparent 45%),
+                      radial-gradient(circle at 90% 80%, rgba(225, 29, 72, 0.05) 0%, transparent 45%),
+                      linear-gradient(135deg, #eef2f8 0%, #f8fafc 100%);
+}
+
+/* Logo Title Gradient tweak for Light Mode readability */
+html[data-theme="light"] .logo-text h1 {
+    background: linear-gradient(135deg, #0f172a 30%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Antigravity White Glass Card Modification */
+html[data-theme="light"] .glass-card {
+    background-color: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 50px rgba(148, 163, 184, 0.1), 
+                0 10px 25px rgba(79, 70, 229, 0.05), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="light"] .glass-card:hover {
+    border-color: rgba(79, 70, 229, 0.25);
+    box-shadow: 0 25px 60px rgba(148, 163, 184, 0.15), 
+                0 12px 30px rgba(79, 70, 229, 0.08), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Light Mode Input elements override */
+html[data-theme="light"] input[type="number"],
+html[data-theme="light"] input[type="datetime-local"],
+html[data-theme="light"] select {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: var(--text-main);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+}
+
+html[data-theme="light"] input[type="number"]:focus,
+html[data-theme="light"] input[type="datetime-local"]:focus,
+html[data-theme="light"] select:focus {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* Light mode calendar picker icon */
+html[data-theme="light"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.2);
+}
+
+/* Light Mode Badge colors */
+html[data-theme="light"] .badge-accent {
+    background-color: rgba(79, 70, 229, 0.08);
+    color: #4f46e5;
+    border-color: rgba(79, 70, 229, 0.15);
+}
+
+html[data-theme="light"] .badge-success {
+    background-color: rgba(5, 150, 105, 0.08);
+    color: #059669;
+    border-color: rgba(5, 150, 105, 0.15);
+}
+
+/* Light Mode circular charts */
+html[data-theme="light"] .circle-bg {
+    stroke: rgba(79, 70, 229, 0.05);
+}
+
+/* Light Mode risk multipliers card */
+html[data-theme="light"] .risk-multiplier-card {
+    background-color: rgba(79, 70, 229, 0.02);
+    border: 1px solid rgba(79, 70, 229, 0.06);
+}
+
+/* Light Mode scrollbar styling */
+html[data-theme="light"] .control-panel::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .control-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Target elements for smooth, fluid zero-gravity color transformations */
+body,
+.app-container,
+.app-header,
+.glass-card,
+.form-group-container,
+.risk-multiplier-card,
+.gauge-card,
+.badge,
+input[type="number"],
+input[type="datetime-local"],
+select,
+.btn-primary,
+.panel-title,
+.panel-subtitle,
+.group-title,
+.group-desc,
+.logo-text h1,
+.logo-text p,
+.result-label,
+#res-severity-class,
+.gauge-name,
+.percentage,
+.risk-value,
+.risk-desc,
+.meta-title,
+.meta-grid,
+.placeholder-state h3,
+.placeholder-state p {
+    transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                backdrop-filter 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                letter-spacing 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* Floating Theme Switcher Button positioning and structure */
+.theme-engine-wrapper {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 9999;
+    animation: zeroGravityBob 4s ease-in-out infinite;
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 9999px;
+    background: rgba(13, 20, 38, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--primary);
+    box-shadow: 0 15px 35px var(--primary-glow);
+    transform: scale(1.05);
+}
+
+/* Light mode overrides for the button itself */
+html[data-theme="light"] .theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.12), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Spinner Icon Slot Logic */
+.theme-icon-slot {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-icon-slot i {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Default Icon Settings (Dark Theme Active) */
+.icon-sun {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+    color: #f59e0b; /* Golden Sun */
+}
+
+.icon-moon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+    color: #a5b4fc; /* Pale blue moon */
+}
+
+/* Light Theme overrides for icons (Light Theme Active) */
+html[data-theme="light"] .icon-sun {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+html[data-theme="light"] .icon-moon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+/* Status indicator badge inside the button */
+.theme-badge {
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    background-color: rgba(95, 90, 246, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(95, 90, 246, 0.25);
+}
+
+html[data-theme="light"] .theme-badge {
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4f46e5;
+    border: 1px solid rgba(79, 70, 229, 0.2);
+}
+
+/* Zero gravity bobbing animation keyframe definition */
+@keyframes zeroGravityBob {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}

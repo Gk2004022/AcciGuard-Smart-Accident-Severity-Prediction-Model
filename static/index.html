@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcciGuard: Smart Vehicle Accident Severity Prediction using Machine Learning</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Lucide Icons for premium illustrations -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        // Inline script to prevent theme flash (FOUC) on load
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-area">
+                <i data-lucide="shield-alert" class="icon-primary animate-pulse"></i>
+                <div class="logo-text">
+                    <h1>Antigravity</h1>
+                    <p>AcciGuard: Smart Vehicle Accident Severity Prediction using Machine Learning</p>
+                </div>
+            </div>
+            <div class="header-badges">
+                <span class="badge badge-accent">
+                    <i data-lucide="cpu" class="badge-icon"></i> LightGBM Class-Weighted
+                </span>
+                <span class="badge badge-success">
+                    <i data-lucide="check-circle" class="badge-icon"></i> Model Active
+                </span>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="main-layout">
+
+            <!-- LEFT PANEL: FORM CONTROLS -->
+            <section class="control-panel glass-card">
+                <h2 class="panel-title"><i data-lucide="sliders-horizontal" class="title-icon"></i> Accident
+                    Characteristics</h2>
+                <p class="panel-subtitle">Select conditions to analyze predicted severity probability.</p>
+
+                <form id="predictor-form">
+
+                    <!-- GEOGRAPHIC LOCATION -->
+                    <div class="form-group-container">
+                        <h3 class="group-title"><i data-lucide="map-pin" class="group-icon"></i> Geographic Location
+                        </h3>
+                        <p class="group-desc">Click anywhere on the map to set coordinates, or type them directly.</p>
+
+                        <div class="grid-2-col">
+                            <div class="form-group">
+                                <label for="latitude">Latitude</label>
+                                <input type="number" step="any" id="latitude" name="latitude" required value="51.5074">
+                            </div>
+                            <div class="form-group">
+                                <label for="longitude">Longitude</label>
+                                <input type="number" step="any" id="longitude" name="longitude" required
+                                    value="-0.1278">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TEMPORAL METRICS -->
+                    <div class="form-group-container">
+                        <h3 class="group-title"><i data-lucide="calendar-days" class="group-icon"></i> Temporal Settings
+                        </h3>
+                        <div class="form-group">
+                            <label for="accident_datetime">Date and Time of Accident</label>
+                            <input type="datetime-local" id="accident_datetime" name="accident_datetime" required>
+                        </div>
+                    </div>
+
+                    <!-- PHYSICAL ENVIRONMENT -->
+                    <div class="form-group-container">
+                        <h3 class="group-title"><i data-lucide="cloud-rain" class="group-icon"></i> Weather & Road
+                            Surface</h3>
+
+                        <div class="form-group">
+                            <label for="weather_conditions">Weather Conditions</label>
+                            <select id="weather_conditions" name="weather_conditions" required>
+                                <option value="1">Fine (No High Winds)</option>
+                                <option value="2">Raining (No High Winds)</option>
+                                <option value="3">Snowing (No High Winds)</option>
+                                <option value="4">Fine + High Winds</option>
+                                <option value="5">Raining + High Winds</option>
+                                <option value="6">Snowing + High Winds</option>
+                                <option value="7">Fog or Mist</option>
+                                <option value="8">Other</option>
+                                <option value="9">Unknown</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="road_surface_conditions">Road Surface Conditions</label>
+                            <select id="road_surface_conditions" name="road_surface_conditions" required>
+                                <option value="1">Dry</option>
+                                <option value="2">Wet / Damp</option>
+                                <option value="3">Snow</option>
+                                <option value="4">Frost / Ice</option>
+                                <option value="5">Flood (over 3cm deep)</option>
+                                <option value="9">Unknown</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="light_conditions">Light Conditions</label>
+                            <select id="light_conditions" name="light_conditions" required>
+                                <option value="1">Daylight</option>
+                                <option value="4">Darkness - no street lights</option>
+                                <option value="5">Darkness - lights unlit</option>
+                                <option value="6">Darkness - lights lit</option>
+                                <option value="7">Darkness - lights unknown</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- INFRASTRUCTURE CONFIGURATION -->
+                    <div class="form-group-container">
+                        <h3 class="group-title"><i data-lucide="git-fork" class="group-icon"></i> Road & Infrastructure
+                        </h3>
+
+                        <div class="grid-2-col">
+                            <div class="form-group">
+                                <label for="speed_limit">Speed Limit</label>
+                                <select id="speed_limit" name="speed_limit" required>
+                                    <option value="20">20 mph</option>
+                                    <option value="30" selected>30 mph</option>
+                                    <option value="40">40 mph</option>
+                                    <option value="50">50 mph</option>
+                                    <option value="60">60 mph</option>
+                                    <option value="70">70 mph</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="urban_or_rural_area">Area Classification</label>
+                                <select id="urban_or_rural_area" name="urban_or_rural_area" required>
+                                    <option value="1">Urban</option>
+                                    <option value="2">Rural</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="road_type">Road Configuration</label>
+                            <select id="road_type" name="road_type" required>
+                                <option value="6">Single Carriageway</option>
+                                <option value="3">Dual Carriageway</option>
+                                <option value="1">Roundabout</option>
+                                <option value="2">One-Way Street</option>
+                                <option value="7">Slip Road</option>
+                                <option value="9">Unknown</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="first_road_class">First Road Class</label>
+                            <select id="first_road_class" name="first_road_class" required>
+                                <option value="6">Unclassified</option>
+                                <option value="3">Class A Road</option>
+                                <option value="4">Class B Road</option>
+                                <option value="5">Class C Road</option>
+                                <option value="2">A(M) Road</option>
+                                <option value="1">Motorway</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="junction_detail">Junction Type</label>
+                            <select id="junction_detail" name="junction_detail" required>
+                                <option value="0">Not at a Junction</option>
+                                <option value="3">T or Y Junction</option>
+                                <option value="6">Crossroads</option>
+                                <option value="1">Roundabout Junction</option>
+                                <option value="2">Mini-Roundabout</option>
+                                <option value="5">Slip Road Junction</option>
+                                <option value="7">Complex Junction (4+ arms)</option>
+                                <option value="8">Private Road Entrance</option>
+                                <option value="9">Other Junction</option>
+                                <option value="99">Unknown Junction</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- CRASH SCALE -->
+                    <div class="form-group-container">
+                        <h3 class="group-title"><i data-lucide="collision" class="group-icon"></i> Collision Details
+                        </h3>
+                        <div class="grid-2-col">
+                            <div class="form-group">
+                                <label for="number_of_vehicles">Vehicles Involved</label>
+                                <select id="number_of_vehicles" name="number_of_vehicles" required>
+                                    <option value="1">1 Vehicle</option>
+                                    <option value="2" selected>2 Vehicles</option>
+                                    <option value="3">3 Vehicles</option>
+                                    <option value="4+">4 or More</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="number_of_casualties">Casualties</label>
+                                <select id="number_of_casualties" name="number_of_casualties" required>
+                                    <option value="1" selected>1 Person</option>
+                                    <option value="2">2 People</option>
+                                    <option value="3">3 People</option>
+                                    <option value="4">4 People</option>
+                                    <option value="5+">5 or More</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ANALYZE BUTTON -->
+                    <button type="submit" class="btn-primary" id="submit-btn">
+                        <span class="btn-text">Run Predictive Analysis</span>
+                        <i data-lucide="activity" class="btn-icon"></i>
+                    </button>
+
+                </form>
+            </section>
+
+            <!-- RIGHT PANEL: MAP & RESULTS -->
+            <section class="display-panel">
+                <!-- INTERACTIVE MAP MAP -->
+                <div class="map-card glass-card">
+                    <div class="map-header">
+                        <h3><i data-lucide="map" class="header-icon"></i> Interactive Risk Map</h3>
+                        <span class="map-info">Click to select coordinates</span>
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+                <!-- PREDICTION RESULTS -->
+                <div class="results-card glass-card" id="results-section">
+                    <!-- INITIAL STATE placeholder -->
+                    <div class="placeholder-state" id="results-placeholder">
+                        <i data-lucide="help-circle" class="placeholder-icon animate-bounce"></i>
+                        <h3>Awaiting Input Parameters</h3>
+                        <p>Fill out the accident characteristics on the left panel or click the map, then select "Run
+                            Predictive Analysis" to launch the LightGBM inference model.</p>
+                    </div>
+
+                    <!-- RESULT STATE (Initially Hidden) -->
+                    <div class="result-state hidden" id="results-content">
+                        <div class="result-header">
+                            <div>
+                                <span class="result-label">Predicted Severity Class</span>
+                                <h3 id="res-severity-class">Fatal</h3>
+                            </div>
+                            <div class="result-status-badge" id="res-badge">High Risk</div>
+                        </div>
+
+                        <!-- GAUGES CONTAINER -->
+                        <div class="gauges-container">
+                            <!-- SLIGHT GAUGE -->
+                            <div class="gauge-card">
+                                <div class="circle-gauge" data-color="success">
+                                    <svg viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circle-bg"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circle" id="gauge-slight-path" stroke-dasharray="0, 100"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <text x="18" y="20.35" class="percentage" id="gauge-slight-text">0%</text>
+                                    </svg>
+                                </div>
+                                <span class="gauge-name">Slight Probability</span>
+                            </div>
+
+                            <!-- SERIOUS GAUGE -->
+                            <div class="gauge-card">
+                                <div class="circle-gauge" data-color="warning">
+                                    <svg viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circle-bg"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circle" id="gauge-serious-path" stroke-dasharray="0, 100"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <text x="18" y="20.35" class="percentage" id="gauge-serious-text">0%</text>
+                                    </svg>
+                                </div>
+                                <span class="gauge-name">Serious Probability</span>
+                            </div>
+
+                            <!-- FATAL GAUGE -->
+                            <div class="gauge-card">
+                                <div class="circle-gauge" data-color="danger">
+                                    <svg viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circle-bg"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circle" id="gauge-fatal-path" stroke-dasharray="0, 100"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <text x="18" y="20.35" class="percentage" id="gauge-fatal-text">0%</text>
+                                    </svg>
+                                </div>
+                                <span class="gauge-name">Fatal Probability</span>
+                            </div>
+                        </div>
+
+                        <!-- RISK MULTIPLIERS -->
+                        <div class="risk-factors-container">
+                            <div class="risk-multiplier-card" id="card-fatal-mult">
+                                <i data-lucide="alert-triangle" class="risk-icon text-danger"></i>
+                                <div class="risk-info">
+                                    <h4 class="risk-value" id="res-fatal-multiplier">0.0x</h4>
+                                    <p class="risk-desc">Fatal Risk vs. Average UK Accident</p>
+                                </div>
+                            </div>
+                            <div class="risk-multiplier-card" id="card-serious-mult">
+                                <i data-lucide="alert-circle" class="risk-icon text-warning"></i>
+                                <div class="risk-info">
+                                    <h4 class="risk-value" id="res-serious-multiplier">0.0x</h4>
+                                    <p class="risk-desc">Serious Risk vs. Average UK Accident</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UNDER THE HOOD EXTRACTION -->
+                        <div class="meta-section">
+                            <h4 class="meta-title"><i data-lucide="cog" class="meta-icon"></i> Under-The-Hood Feature
+                                Extraction</h4>
+                            <div class="grid-2-col meta-grid">
+                                <div><strong>Hour of Accident:</strong> <span id="meta-hour">--</span></div>
+                                <div><strong>Day of Week:</strong> <span id="meta-day">--</span></div>
+                                <div><strong>Is Weekend:</strong> <span id="meta-weekend">--</span></div>
+                                <div><strong>Time of Day:</strong> <span id="meta-tod">--</span></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Antigravity Theme Switcher Button -->
+    <div class="theme-engine-wrapper">
+        <button id="theme-engine-toggle" class="theme-toggle-btn" aria-label="Toggle Antigravity Theme Engine">
+            <div class="theme-icon-slot">
+                <i data-lucide="sun" class="icon-sun"></i>
+                <i data-lucide="moon" class="icon-moon"></i>
+            </div>
+            <span class="theme-label">Orbit</span>
+            <span class="theme-badge" id="theme-engine-status">Dark</span>
+        </button>
+    </div>
+
+    <!-- Leaflet JS Map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
