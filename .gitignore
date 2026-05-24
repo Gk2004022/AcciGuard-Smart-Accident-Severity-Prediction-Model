@@ -13,3 +13,12 @@ __v0_jsx-dev-runtime.ts
 node_modules
 .next/
 .DS_Store
+
+# Project-specific ignored folders
+public/
+data/
+reports/
+venv/
+.pytest_cache/
+**/__pycache__/
+**/*.pyc
