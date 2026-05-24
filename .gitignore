@@ -15,10 +15,9 @@ node_modules
 .DS_Store
 
 # Project-specific ignored folders
-public/
 data/
 reports/
 venv/
 .pytest_cache/
 **/__pycache__/
-**/*.pyc
+**/*.pyc/

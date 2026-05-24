@@ -6,7 +6,7 @@
 // 2. Global: Set window.BACKEND_URL before script.js loads (ideal for single-page configs)
 // 3. Browser: Set localStorage.setItem('BACKEND_URL', 'https://your-backend.com') in the browser console.
 const CONFIG = {
-    BACKEND_URL: window.BACKEND_URL || localStorage.getItem('BACKEND_URL') || "https://acciguard-smart-accident-severity.onrender.com"
+    BACKEND_URL: window.BACKEND_URL || localStorage.getItem('https://acciguard-smart-accident-severity.onrender.com') || "https://acciguard-smart-accident-severity.onrender.com"
 };
 
 // Determine the API base URL dynamically based on environment
