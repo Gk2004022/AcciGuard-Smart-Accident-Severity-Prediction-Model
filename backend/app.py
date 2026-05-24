@@ -93,10 +93,10 @@ def load_assets():
 @app.get("/")
 async def serve_dashboard():
     """Serves the main dashboard page."""
-    index_path = "static/index.html"
+    index_path = "frontend/index.html"
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    return {"message": "AcciGuard: Smart Vehicle Accident Severity Prediction using Machine Learning API is Active! Static files folder 'static/' not found."}
+    return {"message": "AcciGuard: Smart Vehicle Accident Severity Prediction using Machine Learning API is Active! Static files folder 'frontend/' not found."}
 
 @app.post("/predict")
 async def predict_severity(payload: PredictionPayload):
@@ -264,6 +264,6 @@ async def predict_severity(payload: PredictionPayload):
         raise HTTPException(status_code=400, detail=f"Error processing prediction input: {str(e)}")
 
 # Mount static files folder to serve styles, scripts, and map dependencies
-static_dir = "static"
+static_dir = "frontend"
 if os.path.exists(static_dir):
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    app.mount("/frontend", StaticFiles(directory=static_dir), name="frontend")
