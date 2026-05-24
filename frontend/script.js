@@ -1,5 +1,4 @@
-// CHANGE THIS to your actual deployed Render backend URL (e.g., https://my-accident-predictor.onrender.com)
-const DEPLOYED_BACKEND_URL = 'https://acciguard-smart-accident-severity.onrender.com';
+const DEPLOYED_BACKEND_URL = backend_url_ ;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Determine the API base URL dynamically based on environment
