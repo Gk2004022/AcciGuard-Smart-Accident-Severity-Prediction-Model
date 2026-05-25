@@ -79,24 +79,28 @@ model = None
 # Get the absolute root path where app.py lives
 BASE_DIR = Path(__file__).resolve().parent
 
+BASE_DIR = Path(__file__).resolve().parent
+@app.on_event("startup")
+# BASE_DIR is already /opt/render/project/src/backend
+
 @app.on_event("startup")
 def load_assets():
-    """Loads ML artifacts from disk dynamically using safe absolute paths."""
     global scaler, model_features, model
     try:
         print("Loading serialized machine learning assets...")
         
-        # 2. Dynamically build paths to prevent OS slash mismatches (\ vs /)
-        scaler_path = BASE_DIR / "backend" / "scaler.joblib"
-        features_path = BASE_DIR / "backend" / "model_features.joblib"
-        model_path = BASE_DIR / "backend" / "lightgbm_model.joblib"
+        # 🟢 REMOVE "backend" FROM THE PATH LINKS HERE:
+        scaler_path = BASE_DIR / "scaler.joblib"
+        features_path = BASE_DIR / "model_features.joblib"
+        model_path = BASE_DIR / "lightgbm_model.joblib"
         
-        # Load the assets
+        # Load the assets directly from the script's directory
         scaler = joblib.load(scaler_path)
         model_features = joblib.load(features_path)
         model = joblib.load(model_path)
         
         print("Assets successfully loaded! Service ready.")
+
     except Exception as e:
         print(f"CRITICAL: Failed to load machine learning assets from 'backend/'. Error: {e}")
         print("Please run 'python train_and_save_model.py' to generate the required joblib assets.")
