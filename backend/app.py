@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
+from pathlib import Path 
 # Define unscaled numeric medians and categorical defaults
 DEFAULT_NUMERICS = {
     'police_force': 30.0,
@@ -75,18 +76,29 @@ scaler = None
 model_features = None
 model = None
 
+# Get the absolute root path where app.py lives
+BASE_DIR = Path(__file__).resolve().parent
+
 @app.on_event("startup")
 def load_assets():
-    """Loads ML artifacts from disk during service startup."""
+    """Loads ML artifacts from disk dynamically using safe absolute paths."""
     global scaler, model_features, model
     try:
         print("Loading serialized machine learning assets...")
-        scaler = joblib.load('backend\scaler.joblib')
-        model_features = joblib.load('backend\model_features.joblib')
-        model = joblib.load('backend\lightgbm_model.joblib')
+        
+        # 2. Dynamically build paths to prevent OS slash mismatches (\ vs /)
+        scaler_path = BASE_DIR / "backend" / "scaler.joblib"
+        features_path = BASE_DIR / "backend" / "model_features.joblib"
+        model_path = BASE_DIR / "backend" / "lightgbm_model.joblib"
+        
+        # Load the assets
+        scaler = joblib.load(scaler_path)
+        model_features = joblib.load(features_path)
+        model = joblib.load(model_path)
+        
         print("Assets successfully loaded! Service ready.")
     except Exception as e:
-        print(f"CRITICAL: Failed to load machine learning assets from 'models/'. Error: {e}")
+        print(f"CRITICAL: Failed to load machine learning assets from 'backend/'. Error: {e}")
         print("Please run 'python train_and_save_model.py' to generate the required joblib assets.")
 
 @app.get("/")
